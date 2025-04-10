@@ -22,10 +22,10 @@ public class Dashboard extends JFrame {
         functionalityPanel.setLayout(new GridLayout(2, 2, 10, 10));
 
         // Create buttons for different functionalities
-        JButton inventoryButton = new JButton("Inventory Management");
-        JButton ordersButton = new JButton("Order Management");
-        JButton shipmentsButton = new JButton("Shipment Tracking");
-        JButton reportsButton = new JButton("Reports");
+        JButton inventoryButton = new JButton("Employee Management");
+        JButton ordersButton = new JButton("Task Management");
+        JButton shipmentsButton = new JButton("Supply Management");
+        JButton reportsButton = new JButton("Item Management");
 
         functionalityPanel.add(inventoryButton);
         functionalityPanel.add(ordersButton);
