@@ -68,10 +68,16 @@ public class LoginPage extends JFrame {
     private void handleLogin() {
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword()).trim();
-
+    
         if (db.validateUser(username, password)) {
+            // You can show a login-success message if desired...
             JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            // Future: Transition to the next screen in your warehouse management system.
+            
+            // Open the Dashboard, passing the username (you might use this for personalization).
+            new Dashboard(username);
+            
+            // Dispose of the login window so it no longer appears.
+            this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Invalid username or password!", "Error", JOptionPane.ERROR_MESSAGE);
         }
