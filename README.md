@@ -65,7 +65,7 @@ java -cp ".;lib/sqlite-jdbc-3.49.0.0.jar;src" com.warehouse.management.LoginPage
 The SQLite database is stored in `warehouse.db`. You can create the required tables using SQL or programmatically in `DBSQL.java`.
 
 ## 🧑‍💻 Author
-Your Name — [your-email@example.com]  
+Yash Deepak Pareek — [pareeky866@gmail.com]  
 Project for **Advanced OOP** (LaSalle College)
 
 ---
