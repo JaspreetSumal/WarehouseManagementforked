@@ -23,9 +23,9 @@ public class Dashboard extends JFrame {
 
         // Create buttons for different functionalities
         JButton inventoryButton = new JButton("Employee Management");
-        JButton ordersButton = new JButton("Task Management");
+        JButton ordersButton = new JButton("Item Management");
         JButton shipmentsButton = new JButton("Supply Management");
-        JButton reportsButton = new JButton("Item Management");
+        JButton reportsButton = new JButton("Task Management");
 
         functionalityPanel.add(inventoryButton);
         functionalityPanel.add(ordersButton);
@@ -68,7 +68,7 @@ public class Dashboard extends JFrame {
         // Reports button
         reportsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ReportsFrame().setVisible(true);
+                new TaskManagementFrame().setVisible(true);
             }
         });
     }
