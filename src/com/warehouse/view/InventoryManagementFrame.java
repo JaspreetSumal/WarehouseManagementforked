@@ -3,6 +3,7 @@ package com.warehouse.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
+import com.warehouse.model.DBSQL;
 
 public class InventoryManagementFrame extends JFrame {
     private DefaultTableModel employeeTableModel, shiftTableModel, reportTableModel;
