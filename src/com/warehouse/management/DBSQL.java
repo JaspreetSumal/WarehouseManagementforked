@@ -11,8 +11,15 @@ public class DBSQL {
             // Using SQLite for simplicity. Replace the connection string if using another DB.
             String url = "jdbc:sqlite:warehouse.db";
             connection = DriverManager.getConnection(url);
+
+            if (connection == null) {
+                System.out.println("Database connection failed!");
+            } else {
+                System.out.println("Connected to database successfully.");
+            }
             // Create the Users table if it does not exist.
             createTable();
+            createEmployeeTable();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,5 +64,72 @@ public class DBSQL {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void createEmployeeTable() {
+        String sql = "CREATE TABLE employees ("
+                   + "id INT PRIMARY KEY AUTO_INCREMENT, "
+                   + "name VARCHAR(50) NOT NULL, "
+                   + "role VARCHAR(50) NOT NULL, "
+                   + "hourly_rate DECIMAL(10,2) NOT NULL"
+                   + ");";
+    
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("Table 'employees' created successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void insertEmployee(int id, String name, String role, double hourlyRate) {
+        String sql = "INSERT INTO employees (id, name, role, hourly_rate) VALUES (?, ?, ?, ?)";
+        
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, name);
+            pstmt.setString(3, role);
+            pstmt.setDouble(4, hourlyRate);
+            pstmt.executeUpdate();
+            System.out.println("Employee added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateEmployee(int id, String role, double hourlyRate) {
+        String sql = "UPDATE employees SET role = ?, hourly_rate = ? WHERE id = ?";
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, role);
+            pstmt.setDouble(2, hourlyRate);
+            pstmt.setInt(3, id);
+            int rowsAffected = pstmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("Employee updated successfully!");
+            } else {
+                System.out.println("No employee found with ID: " + id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteEmployee(int id) {
+        String sql = "DELETE FROM employees WHERE id = ?";
+    
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            int rowsAffected = pstmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("Employee deleted successfully!");
+            } else {
+                System.out.println("No employee found with ID: " + id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.warehouse.management;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
