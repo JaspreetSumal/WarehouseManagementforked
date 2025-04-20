@@ -1,4 +1,4 @@
-package com.warehouse.management;
+package com.warehouse.model;
 
 import java.sql.*;
 

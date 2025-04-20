@@ -1,6 +1,10 @@
-package com.warehouse.management;
+package com.warehouse.view;
+
+import com.warehouse.model.DBSQL;
+import com.warehouse.management.Dashboard;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
