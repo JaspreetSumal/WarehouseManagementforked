@@ -1,4 +1,4 @@
-package com.warehouse.management;
+package com.warehouse.view;
 
 import javax.swing.*;
 import java.awt.*;

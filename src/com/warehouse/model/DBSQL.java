@@ -1,4 +1,4 @@
-package com.warehouse.management;
+package com.warehouse.model;
 
 import java.sql.*;
 
@@ -27,10 +27,7 @@ public class DBSQL {
 
     // Create the Users table.
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS Users (" +
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                     "username TEXT UNIQUE NOT NULL, " +
-                     "password TEXT NOT NULL);";
+        String sql = "CREATE TABLE IF NOT EXISTS Users (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "username TEXT UNIQUE NOT NULL, " + "password TEXT NOT NULL);";
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {

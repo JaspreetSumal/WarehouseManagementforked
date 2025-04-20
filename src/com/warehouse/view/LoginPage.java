@@ -1,8 +1,10 @@
-package com.warehouse.management;
+package com.warehouse.view;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import com.warehouse.model.DBSQL; 
 
 public class LoginPage extends JFrame {
 
