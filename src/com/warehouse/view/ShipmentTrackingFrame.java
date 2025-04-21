@@ -1,129 +1,164 @@
 package com.warehouse.view;
 
+import com.warehouse.model.DBSQL;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 
 public class ShipmentTrackingFrame extends JFrame {
-    private DefaultListModel<File> fileListModel;
-    private JList<File> fileList;
-    private JButton btnAddFile;
-    private JButton btnRemoveFile;
+    private DBSQL dbSQL;
 
     public ShipmentTrackingFrame() {
         super("Shipping Tracking");
-
-        // Initialize the list model and JList to show selected files.
-        fileListModel = new DefaultListModel<>();
-        fileList = new JList<>(fileListModel);
-        fileList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                // Display the file name instead of the full path
-                String fileName = ((File) value).getName();
-                return super.getListCellRendererComponent(list, fileName, index, isSelected, cellHasFocus);
-            }
-        });
-        JScrollPane scrollPane = new JScrollPane(fileList);
-        scrollPane.setPreferredSize(new Dimension(300, 150));
-
-        // Button to add files using a file chooser.
-        btnAddFile = new JButton("Add File(s)");
-        btnAddFile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                // Allow selecting multiple files.
-                fileChooser.setMultiSelectionEnabled(true);
-                int returnValue = fileChooser.showOpenDialog(ShipmentTrackingFrame.this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File[] selectedFiles = fileChooser.getSelectedFiles();
-                    for (File file : selectedFiles) {
-                        fileListModel.addElement(file);
-                    }
-                }
-            }
-        });
-
-        // Button to remove the selected file from the list.
-        btnRemoveFile = new JButton("Remove Selected File");
-        btnRemoveFile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int selectedIdx = fileList.getSelectedIndex();
-                if (selectedIdx != -1) {
-                    fileListModel.remove(selectedIdx);
-                } else {
-                    JOptionPane.showMessageDialog(ShipmentTrackingFrame.this,
-                            "Please select a file to remove.",
-                            "No Selection",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-
-        // Create the File Management Panel (existing functionality)
-        JPanel fileManagementPanel = new JPanel(new BorderLayout());
-        fileManagementPanel.add(new JLabel("Manage Your Shipment Files", SwingConstants.CENTER), BorderLayout.NORTH);
-        fileManagementPanel.add(scrollPane, BorderLayout.CENTER);
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(btnAddFile);
-        buttonPanel.add(btnRemoveFile);
-        fileManagementPanel.add(buttonPanel, BorderLayout.SOUTH);
+        dbSQL = new DBSQL(); // Initialize database connection
 
         // Create a Tabbed Pane to incorporate multiple modules.
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("File Management", fileManagementPanel);
 
-        // Create additional panels as placeholders, each corresponding to your domain
-        // classes.
-        JPanel dispatchListPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        dispatchListPanel.add(new JLabel("DispatchList module details go here."));
-        tabbedPane.addTab("Dispatch List", dispatchListPanel);
+        tabbedPane.addTab("Dispatch List",
+                createDataEntryPanel("DispatchList", new String[] { "ID", "Name", "Dispatch Time" }));
+        tabbedPane.addTab("Dock", createDataEntryPanel("Dock", new String[] { "DockID", "Location", "Status" }));
+        tabbedPane.addTab("Logistic Truck",
+                createDataEntryPanel("LogisticTruck", new String[] { "TruckID", "License Plate", "Capacity" }));
+        tabbedPane.addTab("Product",
+                createDataEntryPanel("Product", new String[] { "ProductID", "Name", "Quantity", "Price" }));
+        tabbedPane.addTab("Receive List",
+                createDataEntryPanel("ReceiveList", new String[] { "ReceiveID", "Supplier", "Received Date" }));
+        tabbedPane.addTab("Supplier Worker",
+                createDataEntryPanel("SupplierWorker", new String[] { "WorkerID", "Name", "Role" }));
+        tabbedPane.addTab("Team Leader",
+                createDataEntryPanel("TeamLeader", new String[] { "LeaderID", "Name", "Department" }));
+        tabbedPane.addTab("Worker", createDataEntryPanel("Worker", new String[] { "WorkerID", "Name", "Shift" }));
 
-        JPanel dockPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        dockPanel.add(new JLabel("Dock module details go here."));
-        tabbedPane.addTab("Dock", dockPanel);
-
-        JPanel logisticTruckPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        logisticTruckPanel.add(new JLabel("LogisticTruck module details go here."));
-        tabbedPane.addTab("Logistic Truck", logisticTruckPanel);
-
-        JPanel productPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        productPanel.add(new JLabel("Product module details go here."));
-        tabbedPane.addTab("Product", productPanel);
-
-        JPanel receiveListPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        receiveListPanel.add(new JLabel("ReceiveList module details go here."));
-        tabbedPane.addTab("Receive List", receiveListPanel);
-
-        JPanel supplierWorkerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        supplierWorkerPanel.add(new JLabel("SupplierWorker module details go here."));
-        tabbedPane.addTab("Supplier Worker", supplierWorkerPanel);
-
-        JPanel teamLeaderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        teamLeaderPanel.add(new JLabel("TeamLeader module details go here."));
-        tabbedPane.addTab("Team Leader", teamLeaderPanel);
-
-        JPanel workerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        workerPanel.add(new JLabel("Worker module details go here."));
-        tabbedPane.addTab("Worker", workerPanel);
-
-        // Add the Tabbed Pane to the Frame.
         add(tabbedPane, BorderLayout.CENTER);
 
         // Set basic frame settings.
-        setSize(600, 400);
-        setLocationRelativeTo(null); // centers the window.
+        setSize(800, 500);
+        setLocationRelativeTo(null); // Centers the window.
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    private JPanel createDataEntryPanel(String tableName, String[] columnNames) {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Table model with appropriate column names
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Create "Add" button
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(e -> {
+            JPanel inputPanel = new JPanel(new GridLayout(columnNames.length, 2));
+            JTextField[] textFields = new JTextField[columnNames.length];
+
+            for (int i = 0; i < columnNames.length; i++) {
+                inputPanel.add(new JLabel(columnNames[i] + ":"));
+                textFields[i] = new JTextField();
+                inputPanel.add(textFields[i]);
+            }
+
+            int result = JOptionPane.showConfirmDialog(ShipmentTrackingFrame.this, inputPanel,
+                    "Enter " + tableName + " Data", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                Object[] rowData = new Object[columnNames.length];
+                String[] values = new String[columnNames.length];
+
+                for (int i = 0; i < columnNames.length; i++) {
+                    rowData[i] = textFields[i].getText().trim();
+                    values[i] = textFields[i].getText().trim();
+                }
+                tableModel.addRow(rowData);
+
+                // If using a database, insert data into the database
+                dbSQL.insertData(tableName, columnNames, values);
+            }
+        });
+
+        // Create "Delete" button
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                // Get the primary key value for the row being deleted
+                String primaryKeyValue = tableModel.getValueAt(selectedRow, 0).toString();
+                String primaryKeyColumn = columnNames[0]; // Assuming the first column is the primary key
+
+                // Remove the selected row from the table
+                tableModel.removeRow(selectedRow);
+
+                // If using a database, delete the corresponding data
+                dbSQL.deleteData(tableName, primaryKeyColumn, primaryKeyValue);
+            } else {
+                JOptionPane.showMessageDialog(ShipmentTrackingFrame.this,
+                        "Please select a row to delete.",
+                        "No Selection",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        // Create "Update" button
+        JButton updateButton = new JButton("Update");
+        updateButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                JPanel inputPanel = new JPanel(new GridLayout(columnNames.length, 2));
+                JTextField[] textFields = new JTextField[columnNames.length];
+
+                // Populate text fields with selected row data for editing
+                for (int i = 0; i < columnNames.length; i++) {
+                    inputPanel.add(new JLabel(columnNames[i] + ":"));
+                    textFields[i] = new JTextField(tableModel.getValueAt(selectedRow, i).toString());
+                    inputPanel.add(textFields[i]);
+                }
+
+                int result = JOptionPane.showConfirmDialog(ShipmentTrackingFrame.this, inputPanel,
+                        "Update " + tableName + " Data", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    Object[] rowData = new Object[columnNames.length];
+                    String[] values = new String[columnNames.length];
+
+                    for (int i = 0; i < columnNames.length; i++) {
+                        rowData[i] = textFields[i].getText().trim();
+                        values[i] = textFields[i].getText().trim();
+                    }
+
+                    // Update the table model with new values
+                    for (int i = 0; i < columnNames.length; i++) {
+                        tableModel.setValueAt(rowData[i], selectedRow, i);
+                    }
+
+                    // If using a database, update data in the database
+                    String primaryKeyValue = tableModel.getValueAt(selectedRow, 0).toString();
+                    String primaryKeyColumn = columnNames[0]; // Assuming the first column is the primary key
+                    dbSQL.updateData(tableName, columnNames, values, primaryKeyColumn, primaryKeyValue);
+                }
+            } else {
+                JOptionPane.showMessageDialog(ShipmentTrackingFrame.this,
+                        "Please select a row to update.",
+                        "No Selection",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        // Bottom panel for buttons
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.add(addButton);
+        bottomPanel.add(deleteButton);
+        bottomPanel.add(updateButton);
+
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(bottomPanel, BorderLayout.SOUTH);
+
+        return panel;
     }
 
     // Main method for testing this frame independently.
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new ShipmentTrackingFrame().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new ShipmentTrackingFrame().setVisible(true));
     }
 }
